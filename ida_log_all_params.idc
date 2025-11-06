@@ -38,17 +38,24 @@ static log_all_parameters() {
     auto esp = get_reg_value("ESP");
     auto source_ptr = Dword(esp + 4);
     auto fp;
+    auto wstr;
+
+    // Debug: log mỗi lần function được gọi
+    Message("[CALL] sub_7C687790 called! ESP=0x%08X, source_ptr=0x%08X\n", esp, source_ptr);
 
     // Kiểm tra Source pointer hợp lệ
     if (source_ptr == 0 || source_ptr == 0xFFFFFFFF || source_ptr == BADADDR) {
+        Message("[SKIP] Source pointer is NULL or invalid\n");
         return 0;  // Skip nếu Source NULL
     }
 
     // Đọc Source string
-    auto wstr = read_wchar_string(source_ptr, 200);
+    wstr = read_wchar_string(source_ptr, 200);
+    Message("[READ] Source string: '%s'\n", wstr);
 
     // Kiểm tra nếu string empty hoặc NULL
     if (wstr == "<NULL>" || wstr == "<empty>" || strlen(wstr) == 0) {
+        Message("[SKIP] Source string is empty\n");
         return 0;  // Skip nếu Source empty
     }
 
@@ -60,9 +67,9 @@ static log_all_parameters() {
     if (fp != 0) {
         fprintf(fp, "Source: %s\n", wstr);
         fclose(fp);
-        Message("[DEBUG] Wrote to D:\\1.log successfully\n");
+        Message("[OK] Wrote to D:\\1.log\n");
     } else {
-        Message("[ERROR] Cannot open D:\\1.log for writing!\n");
+        Message("[ERROR] Cannot open D:\\1.log!\n");
     }
 
     return 0;  // Không dừng lại, chỉ log
