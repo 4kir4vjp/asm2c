@@ -5,9 +5,6 @@
 // Function: sub_7C687790(_DWORD *this, wchar_t *Source, struct_a3 *a3, int a4)
 // ============================================================================
 
-// Global counter for call tracking
-auto g_call_count;
-
 static read_wchar_string(addr, max_len) {
     auto wstr = "";
     auto i = 0;
@@ -100,12 +97,10 @@ static log_all_parameters() {
     auto a4_val = Dword(esp + 12);
     auto ret_addr = Dword(esp);
 
-    g_call_count++;
-
     // Header
     Message("\n");
     Message("════════════════════════════════════════════════════════════════\n");
-    Message("Call #%d to sub_7C687790\n", g_call_count);
+    Message("Call to sub_7C687790\n");
     Message("════════════════════════════════════════════════════════════════\n");
     Message("Called from: 0x%08X\n", ret_addr);
     Message("EIP        : 0x%08X\n", eip);
@@ -145,9 +140,6 @@ static log_all_parameters() {
 
 static main() {
     auto func_addr;
-
-    // Initialize global counter
-    g_call_count = 0;
 
     // Tìm địa chỉ function
     func_addr = get_name_ea_simple("sub_7C687790");
