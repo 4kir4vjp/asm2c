@@ -52,11 +52,17 @@ static log_all_parameters() {
         return 0;  // Skip nếu Source empty
     }
 
+    // Debug: in ra IDA output
+    Message("Source: %s\n", wstr);
+
     // Ghi vào file D:\1.log (append mode)
     fp = fopen("D:\\1.log", "a");
     if (fp != 0) {
         fprintf(fp, "Source: %s\n", wstr);
         fclose(fp);
+        Message("[DEBUG] Wrote to D:\\1.log successfully\n");
+    } else {
+        Message("[ERROR] Cannot open D:\\1.log for writing!\n");
     }
 
     return 0;  // Không dừng lại, chỉ log
