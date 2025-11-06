@@ -97,6 +97,19 @@ static log_all_parameters() {
     auto a4_val = Dword(esp + 12);
     auto ret_addr = Dword(esp);
 
+    // Kiểm tra Source pointer hợp lệ
+    if (source_ptr == 0 || source_ptr == 0xFFFFFFFF || source_ptr == BADADDR) {
+        return 0;  // Skip nếu Source NULL
+    }
+
+    // Đọc Source string
+    auto wstr = read_wchar_string(source_ptr, 200);
+
+    // Kiểm tra nếu string empty hoặc NULL
+    if (wstr == "<NULL>" || wstr == "<empty>" || strlen(wstr) == 0) {
+        return 0;  // Skip nếu Source empty
+    }
+
     // Header
     Message("\n");
     Message("════════════════════════════════════════════════════════════════\n");
@@ -115,7 +128,6 @@ static log_all_parameters() {
     Message("\n");
 
     // Source (wchar_t*)
-    auto wstr = read_wchar_string(source_ptr, 200);
     Message("  Source   : 0x%08X\n", source_ptr);
     Message("    -> \"%s\"\n", wstr);
 
