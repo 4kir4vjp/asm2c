@@ -37,6 +37,7 @@ static read_wchar_string(addr, max_len) {
 static log_all_parameters() {
     auto esp = get_reg_value("ESP");
     auto source_ptr = Dword(esp + 4);
+    auto fp;
 
     // Kiểm tra Source pointer hợp lệ
     if (source_ptr == 0 || source_ptr == 0xFFFFFFFF || source_ptr == BADADDR) {
@@ -51,8 +52,12 @@ static log_all_parameters() {
         return 0;  // Skip nếu Source empty
     }
 
-    // In 1 dòng duy nhất với Source
-    Message("Source: %s\n", wstr);
+    // Ghi vào file D:\1.log (append mode)
+    fp = fopen("D:\\1.log", "a");
+    if (fp != 0) {
+        fprintf(fp, "Source: %s\n", wstr);
+        fclose(fp);
+    }
 
     return 0;  // Không dừng lại, chỉ log
 }
@@ -80,7 +85,8 @@ static main() {
         Message("════════════════════════════════════════════════════════════════\n");
         Message("Function  : sub_7C687790\n");
         Message("Address   : 0x%08X\n", func_addr);
-        Message("Mode      : Log Source parameter only (1 line per call)\n");
+        Message("Output    : D:\\1.log\n");
+        Message("Mode      : Append Source parameter (1 line per call)\n");
         Message("════════════════════════════════════════════════════════════════\n");
     } else {
         Message("Error: Failed to set breakpoint at 0x%08X\n", func_addr);
